@@ -13,16 +13,22 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 class Graph extends JPanel implements ActionListener {
 	ArrayList<Integer> xl;
 	ArrayList<Integer> yl;
+        int lyfe;
+        JLabel fruitcake;
 	
-	public Graph(){	
+	public Graph(int lyfe){	
 		this.xl = new ArrayList<Integer>();
 		this.yl = new ArrayList<Integer>();
+                this.lyfe = lyfe;               
+                this.fruitcake = new JLabel(Integer.toString(lyfe));
+
 	}
 	
 	public void addPoint(int x, int y){
@@ -58,7 +64,10 @@ class Graph extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        add(this.fruitcake);
         doDrawing(g);
+       
+        
        
       
     }
@@ -68,6 +77,8 @@ class Graph extends JPanel implements ActionListener {
 		// TODO Auto-generated method stub
 		
 	}
+        
+    
 
 }
 

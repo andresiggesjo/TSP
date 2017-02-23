@@ -20,7 +20,7 @@ public class GPoints extends JFrame {
         setSize(1000, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+        
        
    
 

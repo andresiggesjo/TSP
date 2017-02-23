@@ -70,7 +70,7 @@ public class TSP_GA {
  
             improve ++;
         }
-        drawBest(tour);
+        draw(tour);
     }
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
@@ -97,7 +97,7 @@ public class TSP_GA {
 
 
         // Initialize population
-        Population pop = new Population(200, true);
+        Population pop = new Population(150, true);
         System.out.println("Initial distance: " + pop.getFittest().getDistance());
 
         //Set mutationrate
@@ -105,10 +105,11 @@ public class TSP_GA {
         
         // Evolve population for 100 generations
         pop = GA.evolvePopulation(pop);
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 300; i++) {
             pop = GA.evolvePopulation(pop);
         }
         System.out.println(pop.getFittest().getDistance());
+        drawBest(pop.getFittest());
         TwoOpt(pop.getFittest());
         
 
@@ -120,7 +121,7 @@ public class TSP_GA {
 
     private static void drawBest(Tour tour) {
        GPoints g = new GPoints(); 
-       Graph g2 = new Graph();
+       Graph g2 = new Graph(tour.getDistance());
 
        for (int i = 0; i < tour.tourSize(); i++) {
         	
@@ -129,6 +130,24 @@ public class TSP_GA {
         	
 		}
         g.initUI(g2);
+        g.setVisible(true);
+
+        // Print final results
+        System.out.println(tour.getDistance());
+        System.out.println("Finished");
+    }
+        private static void draw(Tour tour) {
+       GPoints g = new GPoints(); 
+       Graph g2 = new Graph(tour.getDistance());
+
+       for (int i = 0; i < tour.tourSize(); i++) {
+        	
+        	City c = tour.getCity(i);
+        	g2.addPoint(c.getX(), c.getY());
+        	
+		}
+        g.initUI(g2);
+        g.setVisible(true);
 
         // Print final results
         System.out.println(tour.getDistance());
