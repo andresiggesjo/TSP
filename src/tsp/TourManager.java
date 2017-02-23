@@ -26,4 +26,7 @@ public class TourManager {
     public static int numberOfCities(){
         return destinationCities.size();
     }
+     public static int getCityLength() {
+    	return destinationCities.size();
+    }
 }

@@ -38,7 +38,7 @@ public class TSP_GA {
 
 
         // Initialize population
-        Population pop = new Population(10000, true);
+        Population pop = new Population(100, true);
         System.out.println("Initial distance: " + pop.getFittest().getDistance());
 
         //Set mutationrate
@@ -46,9 +46,20 @@ public class TSP_GA {
         
         // Evolve population for 100 generations
         pop = GA.evolvePopulation(pop);
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100; i++) {
             pop = GA.evolvePopulation(pop);
         }
+        
+       GPoints g = new GPoints(); 
+       Graph g2 = new Graph();
+
+       for (int i = 0; i < TourManager.getCityLength(); i++) {
+        	;
+        	City c = TourManager.getCity(i);
+        	g2.addPoint(c.getX(), c.getY());
+        	
+		}
+        g.initUI(g2);
 
         // Print final results
         System.out.println("Finished");
