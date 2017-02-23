@@ -10,10 +10,14 @@ public class GA {
     /* GA parameters */
     //5% mutationsrate
     //hhh
-    private static final double mutationRate = 0.005;
+    private static double mutationRate = 0.004;
     private static final int tournamentSize = 5;
     private static final boolean elitism = true;
-    private static int counter = 0;
+
+    public static void setMutationRate(double mutationRate) {
+        GA.mutationRate = mutationRate;
+    }
+    
 
     // Evolves a population over one generation
     public static Population evolvePopulation(Population pop) {
