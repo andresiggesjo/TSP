@@ -13,6 +13,65 @@ import java.util.ArrayList;
 
 
 public class TSP_GA {
+    
+    public static Tour TwoOptSwap(int i, int k , Tour best) 
+{
+    int size = best.tourSize();
+    Tour newTour = new Tour();
+ 
+    // 1. take route[0] to route[i-1] and add them in order to new_route
+    for ( int c = 0; c <= i - 1; ++c )
+    {
+        newTour.setCity(c, best.getCity(c));
+    }
+     
+    // 2. take route[i] to route[k] and add them in reverse order to new_route
+    int dec = 0;
+    for ( int c = i; c <= k; ++c )
+    {
+        newTour.setCity(c, best.getCity(k - dec));
+        dec++;
+    }
+ 
+    // 3. take route[k+1] to end and add them in order to new_route
+    for ( int c = k + 1; c < size; ++c )
+    {
+        newTour.setCity(c, best.getCity(c));
+    }
+    //System.out.println(newTour.getDistance());
+    return newTour;
+}
+    public static void TwoOpt(Tour tour){
+    // Get tour size
+    int size = TourManager.numberOfCities();
+ 
+    // repeat until no improvement is made 
+    int improve = 0;
+ 
+    while ( improve < 20 ){
+        double best_distance = tour.getDistance();
+ 
+        for ( int i = 0; i < size - 1; i++ ) 
+        {
+            for ( int k = i + 1; k < size; k++) 
+            {
+                Tour newestTour = TwoOptSwap(i, k, tour);
+                
+                double new_distance = newestTour.getDistance();
+                if ( new_distance < best_distance ) 
+                {
+                    // Improvement found so reset
+                    improve = 0;
+                    tour = newestTour;
+                    best_distance = new_distance;
+                }
+            }
+        }
+ 
+            improve ++;
+        }
+        drawBest(tour);
+    }
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
 
@@ -38,7 +97,7 @@ public class TSP_GA {
 
 
         // Initialize population
-        Population pop = new Population(100, true);
+        Population pop = new Population(200, true);
         System.out.println("Initial distance: " + pop.getFittest().getDistance());
 
         //Set mutationrate
@@ -46,26 +105,33 @@ public class TSP_GA {
         
         // Evolve population for 100 generations
         pop = GA.evolvePopulation(pop);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 200; i++) {
             pop = GA.evolvePopulation(pop);
         }
+        System.out.println(pop.getFittest().getDistance());
+        TwoOpt(pop.getFittest());
         
+
+        //System.out.println("Final distance: " + pop.getFittest().getDistance());
+        //System.out.println("Solution:");
+        //System.out.println(pop.getFittest());
+        //System.out.println("Berlin52 optimal solution 7500ish");
+    }
+
+    private static void drawBest(Tour tour) {
        GPoints g = new GPoints(); 
        Graph g2 = new Graph();
 
-       for (int i = 0; i < TourManager.getCityLength(); i++) {
-        	;
-        	City c = TourManager.getCity(i);
+       for (int i = 0; i < tour.tourSize(); i++) {
+        	
+        	City c = tour.getCity(i);
         	g2.addPoint(c.getX(), c.getY());
         	
 		}
         g.initUI(g2);
 
         // Print final results
+        System.out.println(tour.getDistance());
         System.out.println("Finished");
-        System.out.println("Final distance: " + pop.getFittest().getDistance());
-        System.out.println("Solution:");
-        System.out.println(pop.getFittest());
-        System.out.println("Berlin52 optimal solution 7500ish");
     }
 }

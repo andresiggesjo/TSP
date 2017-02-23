@@ -84,6 +84,10 @@ public class Tour{
         return distance;
     }
 
+    public ArrayList getTour() {
+        return tour;
+    }
+
     // Get number of cities on our tour
     public int tourSize() {
         return tour.size();
