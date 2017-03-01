@@ -1,0 +1,13 @@
+<-- Berlin52
+<-- Genetic Algorithm
+<-- Population size = 50
+<-- Generations = 10000
+<-- Mutationrate = 0.01
+
+<-- Selection = Tournament
+<-- Crossover = Ordered Crossover
+<-- Mutation = 2-Opt
+
+<-- Avg of 100 runs; 8258
+<-- Time = 5 min 52 secs for 100 runs.
+
