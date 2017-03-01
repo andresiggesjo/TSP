@@ -47,7 +47,8 @@ public class GA {
 
         // Mutate the new population a bit to add some new genetic material
         for (int i = elitismOffset; i < newPopulation.populationSize(); i++) {
-            mutate(newPopulation.getTour(i));
+              newPopulation.saveTour(i, mutate(newPopulation.getTour(i)));
+              //mutateSwap(newPopulation.getTour(i));
         }
         
         //System.out.println("newpopulationdistance  " + newPopulation.getFittest().getDistance());
@@ -94,7 +95,14 @@ public class GA {
     }
 
     // Mutate a tour using swap mutation
-    private static void mutate(Tour tour) {
+    private static Tour mutate(Tour tour) {
+            if(Math.random() < mutationRate){              
+
+                 Tour newestTour = TwoOpt(tour);
+                 return newestTour;
+                
+            }
+        /*
         // Loop through tour cities
         for(int tourPos1=0; tourPos1 < tour.tourSize(); tourPos1++){
             // Apply mutation rate
@@ -116,7 +124,96 @@ public class GA {
                 tour.setCity(tourPos1, city2);
                 
             }
+                
+        }*/;
+            return tour;
+    }
+    
+    private static void mutateSwap(Tour tour){
+        // Loop through tour cities
+        for(int tourPos1=0; tourPos1 < tour.tourSize(); tourPos1++){
+            // Apply mutation rate
+            
+            if(Math.random() < mutationRate){
+                // Get a second random position in the tour
+                int tourPos2 = (int) (tour.tourSize() * Math.random());
+                
+                //Cant mutate itself
+                while(tourPos1 == tourPos2){
+                    tourPos2 = (int) (tour.tourSize() * Math.random());
+                }
+                // Get the cities at target position in tour
+                City city1 = tour.getCity(tourPos1);
+                City city2 = tour.getCity(tourPos2);
+
+                // Swap them around
+                tour.setCity(tourPos2, city1);
+                tour.setCity(tourPos1, city2);
+                
+            }
+                
         }
+        
+    }
+    public static Tour TwoOptSwap(int i, int k , Tour best) 
+{
+    int size = best.tourSize();
+    Tour newTour = new Tour();
+ 
+    // 1. take route[0] to route[i-1] and add them in order to new_route
+    for ( int c = 0; c <= i - 1; ++c )
+    {
+        newTour.setCity(c, best.getCity(c));
+    }
+     
+    // 2. take route[i] to route[k] and add them in reverse order to new_route
+    int dec = 0;
+    for ( int c = i; c <= k; ++c )
+    {
+        newTour.setCity(c, best.getCity(k - dec));
+        dec++;
+    }
+ 
+    // 3. take route[k+1] to end and add them in order to new_route
+    for ( int c = k + 1; c < size; ++c )
+    {
+        newTour.setCity(c, best.getCity(c));
+    }
+    //System.out.println(newTour.getDistance());
+    return newTour;
+}
+    public static Tour TwoOpt(Tour tour){
+    // Get tour size
+    int size = tour.tourSize();
+ 
+    // repeat until no improvement is made 
+
+ 
+
+        double best_distance = tour.getDistance();
+ 
+        //for ( int i = 0; i < size - 1; i++ ) 
+        //{
+            int i = (int)Math.ceil(Math.random()*(tour.tourSize()-1));
+            for ( int k = i + 1; k < size; k++) 
+            {
+                Tour newestTour = TwoOptSwap(i, k, tour);
+
+                
+                double new_distance = newestTour.getDistance();
+                
+               
+                if ( new_distance < best_distance ) {
+                    tour = newestTour;
+                    return tour;
+                }
+            }
+        //}
+ 
+            
+        
+        return tour;
+        //draw(tour);
     }
 
     // Selects candidate tour for crossover

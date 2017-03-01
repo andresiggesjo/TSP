@@ -17,6 +17,7 @@ public class GPoints extends JFrame {
         getContentPane().add(g, BorderLayout.CENTER);
         
         setTitle("TSP");
+        //1000, 800
         setSize(1000, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
