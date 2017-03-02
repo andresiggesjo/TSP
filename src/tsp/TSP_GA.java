@@ -25,9 +25,10 @@ public class TSP_GA {
         
         loadFile();
         for (int i = 0; i < 100; i++) {
-            resultlist.add(result(75,1000,false));
+            resultlist.add(result(75,1000,true));
             
         }
+        System.out.println(calculateAverage(resultlist));
         writeFile((int) calculateAverage(resultlist));     
     }
     
@@ -45,12 +46,12 @@ public class TSP_GA {
     }
     
     private static void writeFile(int subjectToWrite) throws IOException{
-           try(PrintWriter out = new PrintWriter(new FileWriter("score8.txt", true))){
+           try(PrintWriter out = new PrintWriter(new FileWriter("Scores/score8.txt", true))){
             out.println(subjectToWrite);
             }
     }
     private static void loadFile() throws IOException{
-        BufferedReader br = new BufferedReader(new FileReader("berlin52.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("Problems/berlin52.txt"));
         //ArrayList<City> OptimumList = new ArrayList<City>();
         String line;
         while ((line = br.readLine()) != null) {
@@ -76,13 +77,22 @@ public class TSP_GA {
         double xy = 0.5;
         GA.setMutationRate(0.01);
         for (int i = 0; i < generations; i++) {
+            //System.out.println("GENERATIONS: " + i);
+            /*
+            for (int j = 0; j < pop.populationSize(); j++) {
+                
+                System.out.println(pop.getTour(j));
+            }*/
+
             if(logMutation){
             GA.setMutationRate(xy);
             xy -= xy/200;
             }
             pop = GA.evolvePopulation(pop);
             //System.out.println(pop.getFittest().getDistance());
+            
         }
+        //System.out.println("BEST-SOLUTION: " + pop.getFittest().getTour());
         System.out.println(pop.getFittest().getDistance());
         //drawBest(pop.getFittest());
 

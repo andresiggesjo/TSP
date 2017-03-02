@@ -5,6 +5,10 @@
 
 package tsp;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Population {
 
     // Holds population of tours
@@ -23,7 +27,7 @@ public class Population {
             }
         }
     }
-    
+
     // Saves a tour
     public void saveTour(int index, Tour tour) {
         tours[index] = tour;
@@ -50,6 +54,10 @@ public class Population {
     // Gets population size
     public int populationSize() {
         return tours.length;
+    }
+
+    public void updateTour(Tour updateTour, int index) {
+        tours[index] = updateTour;
     }
 
 }

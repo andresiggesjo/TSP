@@ -5,6 +5,8 @@
 
 package tsp;
 
+import java.util.ArrayList;
+
 public class GA {
 
     /* GA parameters */
@@ -19,7 +21,13 @@ public class GA {
 
     // Evolves a population over one generation
 public static Population evolvePopulation(Population pop) {
-       
+        System.out.println(checkInbreeding(pop));
+        //judgementDay(pop);
+        if(checkInbreeding(pop) > 0.75){
+            judgementDay(pop);
+            
+        }
+        
         Population newPopulation = new Population(pop.populationSize(), false);
 
         // Keep our best individual if elitism is enabled
@@ -38,10 +46,19 @@ public static Population evolvePopulation(Population pop) {
             Tour parent1 = tournamentSelection(pop);
             Tour parent2 = tournamentSelection(pop);
             // Crossover parents
-            
-             Tour child = crossover(parent1, parent2);
+
+            if(oneRog(parent1, parent2)){
+                parent2.shuffleStuff();
+                Tour child = crossover(parent1, parent2);
+                newPopulation.saveTour(i, child);
+            }
+            else {
+                Tour child = crossover(parent1, parent2);
+                newPopulation.saveTour(i, child); 
+            }
+             
                // Add child to new population
-              newPopulation.saveTour(i, child);  
+               
            
      
          
@@ -211,5 +228,33 @@ public static Population evolvePopulation(Population pop) {
         // Get the fittest tour
         Tour fittest = tournament.getFittest();
         return fittest;
+    }
+
+    private static boolean oneRog(Tour parent1, Tour parent2) {
+            if(parent1.getTour().equals(parent2.getTour())){
+                return true;
+            }
+        return false;
+    }
+    private static double checkInbreeding(Population pop){
+        double add = (1.0/pop.populationSize());
+        double inbreeding = 0;
+        
+        for (int i = 1; i < pop.populationSize(); i++) {
+            if(pop.getTour(0).getTour().equals(pop.getTour(i).getTour())){
+                inbreeding += add;
+            }
+        }
+        return inbreeding;
+    }
+    private static void judgementDay(Population pop){
+        System.out.println("judge");
+            for (int i = 1; i < pop.populationSize(); i++) {
+                Tour tempTour = pop.getTour(i);
+                tempTour.shuffleStuff();
+                pop.saveTour(i, tempTour);
+
+            }
+        
     }
 }

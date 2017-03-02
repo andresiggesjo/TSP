@@ -36,6 +36,9 @@ public class Tour{
         // Randomly reorder the tour
         Collections.shuffle(tour);
     }
+    public void shuffleStuff(){
+        Collections.shuffle(tour);
+    }
 
     // Gets a city from the tour
     public City getCity(int tourPosition) {
@@ -105,5 +108,27 @@ public class Tour{
             geneString += getCity(i)+"|";
         }
         return geneString;
+    }
+
+    public void setDistance() {
+            int tourDistance = 0;
+            // Loop through our tour's cities
+            for (int cityIndex=0; cityIndex < tourSize(); cityIndex++) {
+                // Get city we're travelling from
+                City fromCity = getCity(cityIndex);
+                // City we're travelling to
+                City destinationCity;
+                // Check we're not on our tour's last city, if we are set our 
+                // tour's final destination city to our starting city
+                if(cityIndex+1 < tourSize()){
+                    destinationCity = getCity(cityIndex+1);
+                }
+                else{
+                    destinationCity = getCity(0);
+                }
+                // Get the distance between the two cities
+                tourDistance += fromCity.distanceTo(destinationCity);
+            }
+            this.distance = tourDistance;
     }
 }
