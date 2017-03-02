@@ -18,7 +18,7 @@ public class GA {
     
 
     // Evolves a population over one generation
-    public static Population evolvePopulation(Population pop) {
+public static Population evolvePopulation(Population pop) {
        
         Population newPopulation = new Population(pop.populationSize(), false);
 
@@ -38,9 +38,13 @@ public class GA {
             Tour parent1 = tournamentSelection(pop);
             Tour parent2 = tournamentSelection(pop);
             // Crossover parents
-            Tour child = crossover(parent1, parent2);
-            // Add child to new population
-            newPopulation.saveTour(i, child);
+            
+             Tour child = crossover(parent1, parent2);
+               // Add child to new population
+              newPopulation.saveTour(i, child);  
+           
+     
+         
             
             
         }
@@ -48,8 +52,8 @@ public class GA {
 
         // Mutate the new population a bit to add some new genetic material
         for (int i = elitismOffset; i < newPopulation.populationSize(); i++) {
-              newPopulation.saveTour(i, mutate(newPopulation.getTour(i)));
-              //mutateSwap(newPopulation.getTour(i));
+             newPopulation.saveTour(i, mutate(newPopulation.getTour(i)));
+             // mutateSwap(newPopulation.getTour(i));
         }
         
         //System.out.println("After mutat:  " + newPopulation.getFittest().getDistance());

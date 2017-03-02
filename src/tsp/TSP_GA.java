@@ -25,7 +25,7 @@ public class TSP_GA {
         
         loadFile();
         for (int i = 0; i < 100; i++) {
-            resultlist.add(result());
+            resultlist.add(result(75,1000,false));
             
         }
         writeFile((int) calculateAverage(resultlist));     
@@ -45,7 +45,7 @@ public class TSP_GA {
     }
     
     private static void writeFile(int subjectToWrite) throws IOException{
-           try(PrintWriter out = new PrintWriter(new FileWriter("score5.txt", true))){
+           try(PrintWriter out = new PrintWriter(new FileWriter("score8.txt", true))){
             out.println(subjectToWrite);
             }
     }
@@ -66,18 +66,20 @@ public class TSP_GA {
             
          }
     }
-    private static int result() throws IOException{
+    private static int result(int popSize, int generations, boolean logMutation) throws IOException{
 
-        Population pop = new Population(100, true);
+        Population pop = new Population(popSize, true);
         System.out.println("Initial distance: " + pop.getFittest().getDistance());
 
         // Evolve population for 100 generations
         pop = GA.evolvePopulation(pop);
         double xy = 0.5;
         GA.setMutationRate(0.01);
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < generations; i++) {
+            if(logMutation){
             GA.setMutationRate(xy);
             xy -= xy/200;
+            }
             pop = GA.evolvePopulation(pop);
             //System.out.println(pop.getFittest().getDistance());
         }

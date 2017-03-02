@@ -1,6 +1,6 @@
 <-- Berlin52
 <-- Genetic Algorithm
-<-- Population size = 250
+<-- Population size = 50
 <-- Generations = 10000
 <-- Mutationrate = 0.01
 
@@ -10,4 +10,25 @@
 
 <-- Avg of 100 runs; 8258
 <-- Time = 5 min 52 secs for 100 runs.
+
+35015
+442
+441
+8148
+8212
+7967
+
+
+9035
+9485
+
+
+13571
+13350
+
+
+8347
+8329
+8158
+
 

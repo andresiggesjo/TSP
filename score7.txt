@@ -13,9 +13,26 @@
 
 
 
+<-- a280
+<-- Genetic Algorithm
+<-- Population size = 75
+<-- Generations = 1000
+<-- Mutationrate = start at 0.5 and decrease with itself/200 at each generation
+
+<-- Selection = Tournament
+<-- Crossover = Ordered Crossover
+<-- Mutation = 2-Opt
+
+<-- Avg of 100 runs; 5387
+<-- Time = 14 min 34 secs for 100 runs.
 
 
 
 
 
 
+
+
+
+
+8163
