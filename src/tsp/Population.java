@@ -38,6 +38,12 @@ public class Population {
         
         return tours[index];
     }
+    public void removeTour(Tour i){
+        List<Tour> list = new ArrayList<Tour>(Arrays.asList(tours));
+        list.removeAll(Arrays.asList(i));
+        tours = list.toArray(tours);
+        System.out.println(tours.length);
+    }
 
     // Gets the best tour in the population
     public Tour getFittest() {

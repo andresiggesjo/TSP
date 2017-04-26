@@ -10,25 +10,61 @@ import java.util.ArrayList;
 public class GA {
 
     /* GA parameters */
-    private static double mutationRate = 0.5;
-    private static final int tournamentSize = 5;
+    public static double mutationRate = 0.5;
+    private static final int tournamentSize = 5; //MÄT
     private static final boolean elitism = true;
-
-    public static void setMutationRate(double mutationRate) {
-        GA.mutationRate = mutationRate;
+    private static boolean judge;
+    private static int breed;
+    private static boolean twoOpt = false;
+    private static boolean origin = true;
+    private static ArrayList<Tour> breedlist = new ArrayList<>();
+    private static boolean bredGoneThrough;
+    
+    public static void setTwoOpt(boolean twoOpt) {
+        GA.twoOpt = twoOpt;
     }
+
+
+    public static void setBreed(int breed) {
+        GA.breed = breed;
+    }
+
+
     
 
     // Evolves a population over one generation
 public static Population evolvePopulation(Population pop) {
-        System.out.println(checkInbreeding(pop));
-        //judgementDay(pop);
-        if(checkInbreeding(pop) > 0.75){
-            judgementDay(pop);
-            
+        Population newPopulation  = new Population(pop.populationSize(), false);
+        Population judgePopulation = null;
+    
+        if(judge){
+            if(checkInbreeding(pop) > (breed)){
+                //double bfjudge = 0;
+                //double pjudge = 0;
+                /*System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+                 for (int i = 0; i < pop.populationSize(); i++) {
+                    bfjudge += pop.getTour(i).getDistance();
+                     System.out.println(pop.getTour(i));
+                }
+                // System.out.println("ELITEN I POP: " + pop.getFittest());
+                // System.out.println("DISTANCEPREJUDGE: " + bfjudge/1134); */
+                 judgePopulation = judgementDay(breedlist, pop);      
+                 bredGoneThrough = true;
+                 
+                /* System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+                 for (int i = 0; i < judgePopulation.populationSize(); i++) {
+                    pjudge += judgePopulation.getTour(i).getDistance();
+                     System.out.println(judgePopulation.getTour(i));
+                }
+                 System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+                // System.out.println("ELITEN I nPOP: " + newPopulation.getFittest());
+                 //System.out.println("DISTANCEPOSTJUDGE: " + pjudge/1134);*/
+            }
         }
         
-        Population newPopulation = new Population(pop.populationSize(), false);
+        //Population newPopulation = new Population(pop.populationSize(), false);
+        
+
 
         // Keep our best individual if elitism is enabled
         int elitismOffset = 0;
@@ -36,41 +72,67 @@ public static Population evolvePopulation(Population pop) {
             newPopulation.saveTour(0, pop.getFittest());
             elitismOffset = 1;
         }
-
-        // Crossover population
-        // Loop over the new population's size and create individuals from
-        // Current population
-        //System.out.println("Before cross: " + pop.getFittest().getDistance());
-        for (int i = elitismOffset; i < newPopulation.populationSize(); i++) {
-            // Select parents
-            Tour parent1 = tournamentSelection(pop);
-            Tour parent2 = tournamentSelection(pop);
-            // Crossover parents
-
-            if(oneRog(parent1, parent2)){
-                parent2.shuffleStuff();
-                Tour child = crossover(parent1, parent2);
-                newPopulation.saveTour(i, child);
-            }
-            else {
-                Tour child = crossover(parent1, parent2);
-                newPopulation.saveTour(i, child); 
-            }
-             
-               // Add child to new population
-               
-           
-     
-         
-            
+        if(!bredGoneThrough){
+            judgePopulation = pop;
+        }
+        else
+        {
+            bredGoneThrough = false;
             
         }
+
+        //Orginal crossover
+        if(origin){
+
+                for (int i = elitismOffset; i < newPopulation.populationSize(); i++) {
+                // Select parents
+                Tour parent1 = tournamentSelection(judgePopulation);
+                Tour parent2 = tournamentSelection(judgePopulation);
+                // Crossover parents
+                Tour child = crossover(parent1, parent2);
+                // Add child to new population
+                newPopulation.saveTour(i, child);
+            }      
+             
+        }
+        else{
+             //Crossover with whilecheck
+            for (int i = elitismOffset; i < newPopulation.populationSize(); i++) {
+                // Select parents
+                Tour parent1 = tournamentSelection(judgePopulation);
+                Tour parent2 = tournamentSelection(judgePopulation);
+                // Crossover parents
+                while(parent1.equals(parent2)){
+                    parent2 = tournamentSelection(judgePopulation);                
+                }
+                if(oneRog(parent1, parent2)){
+                    //mutateSwap(parent2);
+                    parent2.shuffleStuff();
+                    Tour child = crossover(parent1, parent2);
+                    newPopulation.saveTour(i, child);
+                }
+                else {
+                    Tour child = crossover(parent1, parent2);
+                    newPopulation.saveTour(i, child); 
+                }
+
+            }
+            
+        }
+
+ 
         //System.out.println("After cross: " + newPopulation.getFittest().getDistance());
 
         // Mutate the new population a bit to add some new genetic material
         for (int i = elitismOffset; i < newPopulation.populationSize(); i++) {
+           
+            if(twoOpt){
              newPopulation.saveTour(i, mutate(newPopulation.getTour(i)));
-             // mutateSwap(newPopulation.getTour(i));
+            }
+             else{
+                mutateSwap(newPopulation.getTour(i));
+            }
+             
         }
         
         //System.out.println("After mutat:  " + newPopulation.getFittest().getDistance());
@@ -186,6 +248,7 @@ public static Population evolvePopulation(Population pop) {
         int improvement = 0;
         while(improvement < 20){
 
+
         double best_distance = tour.getDistance();
  
         //for ( int i = 0; i < size - 1; i++ ) 
@@ -231,30 +294,76 @@ public static Population evolvePopulation(Population pop) {
     }
 
     private static boolean oneRog(Tour parent1, Tour parent2) {
-            if(parent1.getTour().equals(parent2.getTour())){
+            if(parent1.getFitness() == parent2.getFitness()){
                 return true;
             }
         return false;
     }
-    private static double checkInbreeding(Population pop){
-        double add = (1.0/pop.populationSize());
-        double inbreeding = 0;
-        
+    public static double checkInbreeding(Population pop){
+        int inbreeding = 0;       
         for (int i = 1; i < pop.populationSize(); i++) {
+            //System.out.println("ELITE DISTANCE: " + pop.getTour(0).getDistance());
+            //System.out.println("OTHER COMPARE DISTANCE: " +pop.getTour(i).getDistance());
+            //System.out.println("FIRSTTOUR: " + pop.getTour(0));
+            //System.out.println("COMPETOUR: " + pop.getTour(i));
             if(pop.getTour(0).getTour().equals(pop.getTour(i).getTour())){
-                inbreeding += add;
-            }
-        }
-        return inbreeding;
-    }
-    private static void judgementDay(Population pop){
-        System.out.println("judge");
-            for (int i = 1; i < pop.populationSize(); i++) {
-                Tour tempTour = pop.getTour(i);
-                tempTour.shuffleStuff();
-                pop.saveTour(i, tempTour);
+                
+                //breedlist.add(pop.getTour(i));
+                
+                inbreeding += 1;
 
             }
+        }
+        //System.out.println(inbreeding);
+        return inbreeding;
+    }
+    //shuffla om endast dom som är homogena, tryck sedan in dom i populationen igen
+    public static Population judgementDay(ArrayList<Tour> breedList, Population pop){
+        //System.out.println("judge");
+        Population judgePopulation = new Population(pop.populationSize(), false);
         
+
+
+        // Keep our best individual if elitism is enabled
+        int elitismOffset = 0;
+
+            judgePopulation.saveTour(0, pop.getFittest());
+            elitismOffset = 1;
+
+        
+            //System.out.println("judge");
+            for (int i = elitismOffset; i < judgePopulation.populationSize(); i++) {
+                Tour randTour = new Tour();
+                randTour.generateIndividual();
+                /*System.out.println("PREJUDGE");
+                System.out.println(pop.getTour(i));
+                System.out.println(pop.getTour(i).getDistance());*/
+                judgePopulation.saveTour(i, randTour);
+                //pop.tours[i].shuffleStuff();
+                //pop.updateTour(pop.tours[i], i);
+                //pop.getTour(i).setDistance();
+                /*System.out.println("POSTJUDGE");
+                System.out.println(pop.getTour(i));
+                
+                System.out.println(pop.getTour(i).getDistance());*/
+                //pop.tours[i].setDistance();
+                //pop.saveTour(i, pop.tours[i]);
+                //pop.tours[i].setDistance();
+
+
+            }
+            return judgePopulation;
+        
+    }
+
+    public static void setJudge(boolean judge) {
+        GA.judge = judge;
+    }
+
+    public static void setMutationRate(double mutationRate) {
+        GA.mutationRate = mutationRate;
+    }
+    public static void setCrossover(boolean origin){
+        GA.origin = origin;
     }
 }

@@ -21,15 +21,29 @@ public class TSP_GA {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         ArrayList<Integer> resultlist = new ArrayList<>();
+
+
         
         
         loadFile();
         for (int i = 0; i < 100; i++) {
-            resultlist.add(result(75,1000,true));
+            //result(populationSize, NumberOfGenerations, LogarithmicOrStaticMutationrate, JudgementTrueorFalse, Mutationmethod, Crossovermethod)
+            //resultlist.add(result(1000,1000,false, false, 0, true, false));
+            
+            //MÄT POPSIZE, GENSIZE, 
+            
+            //2-OPT SKAPAR KNAS PREMATURE CONVERGENCE JUDGE FUCKAR UR MED DEN
+            double d = result(1000,5000,false, true, 90, false, false);
+            String d2 = String.valueOf(d);
+            writeFile(d2);
             
         }
-        System.out.println(calculateAverage(resultlist));
-        writeFile((int) calculateAverage(resultlist));     
+        //System.out.println(calculateAverage(resultlist));
+        //writeFile("pop500|gen1000|logmutfalse|judgefalse|judgevalue|2-opt|originalCrossover|berlin52|runs100");
+        //double d = calculateAverage(resultlist);
+        //String d2 = String.valueOf(d);
+        //writeFile(d2);
+        
     }
     
     
@@ -45,8 +59,8 @@ public class TSP_GA {
         return sum;
     }
     
-    private static void writeFile(int subjectToWrite) throws IOException{
-           try(PrintWriter out = new PrintWriter(new FileWriter("Scores/score8.txt", true))){
+    private static void writeFile(String subjectToWrite) throws IOException{
+           try(PrintWriter out = new PrintWriter(new FileWriter("Scores/it3whilerat195.txt", true))){
             out.println(subjectToWrite);
             }
     }
@@ -59,7 +73,7 @@ public class TSP_GA {
             String[] tempArray = line.split("\\s+");
 
             //create city and add it to the tourmanager
-            City tempcity = new City(Integer.parseInt(tempArray[0]), Integer.parseInt(tempArray[1]));
+            City tempcity = new City(Integer.parseInt(tempArray[1]), Integer.parseInt(tempArray[2]));
            // OptimumList.add(tempcity);
             TourManager.addCity(tempcity);
 
@@ -67,32 +81,61 @@ public class TSP_GA {
             
          }
     }
-    private static int result(int popSize, int generations, boolean logMutation) throws IOException{
+    private static int result(int popSize, int generations, boolean logMutation, boolean judge, int breed, boolean mutation, boolean origin) throws IOException{
 
         Population pop = new Population(popSize, true);
         System.out.println("Initial distance: " + pop.getFittest().getDistance());
 
-        // Evolve population for 100 generations
+
         pop = GA.evolvePopulation(pop);
         double xy = 0.5;
-        GA.setMutationRate(0.01);
+        GA.setMutationRate(0.05);
+        GA.setJudge(judge);
+        GA.setBreed(breed);
+        GA.setTwoOpt(mutation);
+        GA.setCrossover(origin);
+        int temp = 0;
         for (int i = 0; i < generations; i++) {
-            //System.out.println("GENERATIONS: " + i);
-            /*
-            for (int j = 0; j < pop.populationSize(); j++) {
-                
-                System.out.println(pop.getTour(j));
-            }*/
+
+            
 
             if(logMutation){
-            GA.setMutationRate(xy);
-            xy -= xy/200;
+                
+                GA.setMutationRate(xy);
+                xy -= xy/1000;
+                //System.out.println(xy);
             }
+            
             pop = GA.evolvePopulation(pop);
-            //System.out.println(pop.getFittest().getDistance());
+            if(pop.getFittest().getDistance() < temp){
+                System.out.println("fittest tour is " + pop.getFittest().getDistance() + " on generation: " + i);
+                 
+
+            }
+            
+            //System.out.println("temp" + temp);
+            temp = pop.getFittest().getDistance();
+            
+            //System.out.println("fittest" +pop.getFittest().getDistance());
+            if(i == generations){
+                System.out.println("MAXGENERATIONS");
+            }
+
+
+
+            for (int j = 0; j < pop.populationSize(); j++) {
+                    //System.out.println(pop.getTour(j));
+                }
+            /*if(GA.checkInbreeding(pop) > breed){
+                System.out.println("ELITEN");
+                System.out.println(pop.getFittest().getTour());
+                for (int j = 0; j < pop.populationSize(); j++) {
+                    System.out.println(pop.getTour(j));
+                }
+            }*/
             
         }
-        //System.out.println("BEST-SOLUTION: " + pop.getFittest().getTour());
+
         System.out.println(pop.getFittest().getDistance());
         //drawBest(pop.getFittest());
 
@@ -130,6 +173,7 @@ public class TSP_GA {
         g.setVisible(true);
 
         // Print final results
+        //System.out.println(tour.);
         System.out.println(tour.getDistance());
         System.out.println("Finished");
     }

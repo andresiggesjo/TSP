@@ -43,19 +43,19 @@ class Graph extends JPanel implements ActionListener {
        int r = (5/2);
        
         for (int i = 0; i < xl.size(); i++) {	
-        	int nyY = h-(yl.get(i)/2);
+        	int nyY = h-(yl.get(i)*5);
         	
-        	g2d.fillOval((xl.get(i)/2)-r, nyY-r, 5,5);
+        	g2d.fillOval((xl.get(i)*5)-r, nyY-r, 5,5);
         	
   
         	if(i+1 <xl.size()){
-        		int nyY1 = h-(yl.get(i+1)/2);
-        		g2d.drawLine((xl.get(i)/2), nyY, (xl.get(i+1)/2), nyY1);
+        		int nyY1 = h-(yl.get(i+1)*5);
+        		g2d.drawLine((xl.get(i)*5), nyY, (xl.get(i+1)*5), nyY1);
         	
         	}
         
         	else{
-        		g2d.drawLine((xl.get(i)/2), nyY, (xl.get(0)/2), h-(yl.get(0)/2));
+        		g2d.drawLine((xl.get(i)*5), nyY, (xl.get(0)*5), h-(yl.get(0)*5));
         	}
         	
 		}
